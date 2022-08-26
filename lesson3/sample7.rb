@@ -12,5 +12,21 @@ def findPrimeNumber(n)
 	}
 	return primeNumbers
 end
+def findPrimeNumber2(n)
+	temporaryArray = Array.new(n, true)
+	primeNumbers = []
+	i = 1
+	loop{
+		i += 1
+		if (i == n) then; break; end
+		if(!temporaryArray[i]) then; next; end
+		primeNumbers.push(i)
+		i.step(n, i) { |j|
+			temporaryArray[j] = false;
+		}
+	}
+	return primeNumbers
+end
 
-p(findPrimeNumber(117000))
+#p(findPrimeNumber(117000))
+p(findPrimeNumber2(20000000))
