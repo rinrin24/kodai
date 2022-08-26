@@ -14,22 +14,6 @@ def pset(x, y, r, g, b)
 		$img[y][x].r = r; $img[y][x].g = g; $img[y][x].b = b
 	end
 end
-def writeimage(name)
-	open(name, "wb") do |f|
-		f.puts("P6\n1920 1080\n255")
-		$img.each do |a|		#y
-			#p(a)
-			k = 0
-			a.each do |p|		#x
-				#p(k)
-				#p(p.to_a)
-				hoge = p.to_a.pack("ccc")
-				f.write(p.to_a.pack("ccc")) 
-				k += 1
-			end
-		end
-	end
-end
 def gradf(x1, y1, x2, y2, colorCode1, colorCode2)
     firstColorB = colorCode1 % 0x100.to_i
     firstColorG = ((colorCode1 - firstColorB) / 0x100.to_i) % 0x100.to_i
@@ -51,8 +35,8 @@ def gradf(x1, y1, x2, y2, colorCode1, colorCode2)
     end
 end
 def fillCircle(x0, y0, rad, r, g, b)
-	1920.times do |y|
-		1080.times do |x|
+	1080.times do |y|
+		1920.times do |x|
 			if (x-x0)**2 + (y-y0)**2 <= rad**2
 				pset(x, y, r, g, b)
 			end
@@ -62,7 +46,7 @@ end
 def drawStars()
 	centerX = 960
 	centerY = 540
-	for i in 5..200 do
+	for i in 5..220 do
 		radius = i * 5
 		initialPointAngle = 10
 		lastPointAngle = 50
@@ -78,22 +62,40 @@ def drawStars()
 	end
 end
 def deg2rad(degree)
-	return degree * 180 / Math::PI;
+	return degree * Math::PI / 180;
 end
 def drawArc(x_, y_, radius_, startPoint_, endPoint_)
 	((endPoint_ - startPoint_).abs * 10).times do |i|
 		curAngle = (startPoint_).to_f + 0.1 * i
-		pointX = x_ + (Math.cos(deg2rad(curAngle)) * radius_).to_i
-		pointY = y_ + (Math.sin(deg2rad(curAngle)) * radius_).to_i
-		printf("x: %g, y: %g\n", pointX, pointY)
-		pset(pointX, pointY, $red, $green, $blue)
+		pointX = x_ + (Math.cos(deg2rad(curAngle)) * radius_)
+		pointY = y_ + (Math.sin(deg2rad(curAngle)) * radius_)
+		#printf("x: %g, y: %g\n", pointX, pointY)
+		pset(pointX, pointY, 255, 255, 255)
+	end
+end
+def writeimage(name)
+	open(name, "wb") do |f|
+		f.puts("P6\n1920 1080\n255")
+		$img.each do |a|		#y
+			#p(a)
+			k = 0
+			a.each do |p|		#x
+				#p(k)
+				#p(p.to_a)
+				hoge = p.to_a.pack("ccc")
+				f.write(p.to_a.pack("ccc")) 
+				k += 1
+			end
+		end
 	end
 end
 def mypicture
-	gradf(0, 480, 1920, 960, 0x765312, 0x000000)
+	gradf(0, 480, 1920, 1080, 0x765312, 0x000000)
 	$red = 255; $green = 255, $blue = 255
 	drawStars()
-	#fillCircle 1920, 7680, 6720, 0, 0, 0
+	#p("------------------------------------")
+	#sleep(20)
+	fillCircle 960, 7680, 6720, 0, 0, 0
 	writeimage("t.ppm")
 end
 
