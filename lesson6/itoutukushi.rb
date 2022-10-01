@@ -46,16 +46,14 @@ def drawStars()
 	centerY = 540
 	for i in 5..220 do
 		radius = i * 5
-		initialPointAngle = 10
-		lastPointAngle = 50
-		arcNum = rand(5) + 1
+		arcNum = rand(6)
 		arcNum.times do |i|
 			minPoint = i * 360 / arcNum
 			maxPoint = (i + 1) * 360 / arcNum
-			startPoint = rand(maxPoint - minPoint - 30) + minPoint
-			endPoint = startPoint + 30
-			drawArc centerX, centerY, radius, startPoint, endPoint
-				#minPoint <= startPoint_ <= maxPoint - 30
+			startPoint = rand(maxPoint - minPoint - ARC_CENTRAL_ANGLE) + minPoint
+			endPoint = startPoint + ARC_CENTRAL_ANGLE
+			drawArc(centerX, centerY, radius, startPoint, endPoint)
+				#minPoint <= startPoint_ <= maxPoint - ARC_CENTRAL_ANGLE
 		end
 	end
 end
@@ -74,20 +72,19 @@ def writeimage(name)
 	open(name, "wb") do |f|
 		f.puts("P6\n" + PICTURE_SIZE_X.to_s + " " + PICTURE_SIZE_Y.to_s + "\n255")
 		$img.each do |a|
-			k = 0
 			a.each do |p|
 				hoge = p.to_a.pack("ccc")
 				f.write(p.to_a.pack("ccc")) 
-				k += 1
 			end
 		end
 	end
 end
-def mypicture()
+def myPicture()
 	gradf(0, 480, 1920, 1080, 0x765312, 0x000000)
 	drawStars()
 	fillCircle 960, 7680, 6720, 0, 0, 0
+	fillCircle 960, 540, 2, 255, 255, 255
 	writeimage("t.ppm")
 end
 
-mypicture()
+myPicture()
