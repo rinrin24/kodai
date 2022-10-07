@@ -14,7 +14,15 @@ def makeAnagram2(n, name, outputArray)
     end
     name.each_index do |i|
         if(name[i] == nil) then; next; end
-        if(outputArray.length >= 1)
+        if(outputArray.length >= 2)
+            if(isVowel(outputArray[outputArray.length-2]))
+                if(outputArray[outputArray.length-1] == name[i])
+                else
+                    if(!isProper(outputArray[outputArray.length-1], name[i])) then; next; end;
+                end
+            end
+        end
+        if(outputArray.length == 1)
             if(!isProper(outputArray[outputArray.length-1], name[i])) then; next; end;
         end
         if(n == 1)
@@ -54,4 +62,5 @@ def isVowel(alphabet)
     return false;
 end
 
-makeAnagram("name")
+name = "rin"
+makeAnagram(name)
