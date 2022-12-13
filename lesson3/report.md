@@ -56,7 +56,7 @@ p(swapArray(A))
 
 ## 実行結果
 ```
-PS C:\Users\略\kodai\lesson2> ruby sample6.rb
+PS C:\Users\略\kodai\lesson3> ruby sample6.rb
 [1, 5, 4, 3, 9, 7]
 [0, 6, -3, 4, -8, 8]
 [-1, 6, -4, 4, -9, 8]
