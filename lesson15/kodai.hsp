@@ -1,0 +1,176 @@
+#const SIZEX 1920
+#const SIZEY 1080
+
+#const CENTERX SIZEX / 2
+#const CENTERY SIZEY / 2
+
+bgscr 0, ginfo_dispx, ginfo_dispy, , 0, 0
+
+//トンネル壁E
+    buffer 1, SIZEX, SIZEY
+	gsel 1, 1
+    depth = 17
+
+    ddim curTlx, depth
+    ddim curTly, depth
+    ddim curBrx, depth
+    ddim curBry, depth
+
+    tunnelSegmentSizeRate = 1.5
+
+    repeat depth
+        radius = (10 * powf(tunnelSegmentSizeRate, cnt))
+
+        curTlx(depth - cnt) = double(CENTERX - radius)
+        curTly(depth - cnt) = double(CENTERY - radius)
+        curBrx(depth - cnt) = double(CENTERX + radius)
+        curBry(depth - cnt) = double(CENTERY + radius)
+    loop
+
+    repeat depth
+        color 100 - (cnt * 5), 100 - (cnt * 5), 100 - (cnt * 5)
+        circle curTlx(cnt), curTly(cnt), curBrx(cnt), curBry(cnt)
+        wait 1
+    loop
+
+//道路
+    roadThick = 10
+    dim roadX, 4
+    dim roadY, 4
+
+    roadX(0) = CENTERX + roadThick / 2
+    roadX(1) = CENTERX - roadThick / 2
+    roadX(2) = 290
+    roadX(3) = SIZEX - 290	//1920 * 849 / 1000 = 1630
+
+    roadY(0) = CENTERY + 5
+    roadY(1) = CENTERY + 5
+    roadY(2) = SIZEY
+    roadY(3)= SIZEY
+
+    buffer 2, SIZEX, SIZEY
+    color 40,40,40
+    boxf
+
+    gsel 1
+
+    gsquare 2, roadX, roadY, roadX, roadY
+
+//白?E
+    line_thick = 10
+    dim lineX, 4
+    dim lineY, 4
+
+    lineX(0) = CENTERX
+    lineX(1) = CENTERX
+    lineX(2) = CENTERX - line_thick / 2
+    lineX(3) = CENTERX + line_thick / 2
+
+    lineY(0) = CENTERY + 5
+    lineY(1) = CENTERY + 5
+    lineY(2) = 1080
+    lineY(3) = 1080
+
+    buffer 3, 1920,1080
+    color 255, 255, 255
+    boxf
+
+    gsel 1
+
+    gsquare 3, lineX, lineY, lineX, lineY
+
+//ライチE
+	color 255, 255, 0
+	;line 0, SIZEY / 5 - 30, CENTERX, CENTERY
+	;line 0, SIZEY / 5 + 30, CENTERX, CENTERY	
+	;line SIZEX, SIZEY / 5 - 30, CENTERX, CENTERY
+	;line SIZEX, SIZEY / 5 + 30, CENTERX, CENTERY
+buffer 5, SIZEX, SIZEY
+gsel 0
+lightSpeed = 1.2
+LIGHT_NUM = 3
+LIGHT_SPAN = 60
+curFrame = 0
+
+headLightCoolTime = 0
+
+repeat
+	redraw 0
+	gsel 5
+	gcopy 1, 0, 0, SIZEX, SIZEY
+	repeat 2
+		if(cnt == 0){
+			slopeT = double(CENTERY-(SIZEY/5 - 60)) / (double(CENTERX) - 0)
+			slopeB = double(CENTERY-(SIZEY/5 + 60)) / (double(CENTERX) - 0)
+			sliceT = double(CENTERY) - slopeT * CENTERX
+			sliceB = double(CENTERY) - slopeB * CENTERX
+			;curLRFlag = 1
+			repeat 3
+				curTX = double(CENTERX) - powf(lightSpeed, ((curFrame + cnt * LIGHT_SPAN / LIGHT_NUM)\LIGHT_SPAN))
+				curTY = slopeT * curTX + sliceT
+				hoge = powf(curTX - CENTERX, 2) + powf(curTY - CENTERY, 2)
+				curBX = ((slopeB * CENTERY + CENTERX - slopeB * sliceB) - sqrt(powf(slopeB * CENTERY + CENTERX - slopeB * sliceB, 2) - (powf(CENTERX, 2) + powf(CENTERY, 2) - 2 * sliceB * CENTERY + powf(sliceB, 2) - hoge) * (powf(slopeB, 2) + 1))) / (powf(slopeB, 2) + 1) 
+				curBY = slopeB * curBX + sliceB
+				dlightX(0) = double(CENTERX) - 1.5 * powf(lightSpeed, ((curFrame + cnt * LIGHT_SPAN / LIGHT_NUM)\LIGHT_SPAN))
+				dlightX(1) =  curTX
+				dlightX(2) =  curBX
+				dlightX(3) =  double(CENTERX) - 1.5 * (CENTERX - curBX)
+				dlightY(0) = dlightX(0) * slopeT + sliceT
+				dlightY(1) = dlightX(1) * slopeT + sliceT
+				dlightY(2) = dlightX(2) * slopeB + sliceB
+				dlightY(3) = dlightX(3) * slopeB + sliceB
+				repeat 4
+					lightX.cnt = int(dlightX.cnt)
+					lightY.cnt = int(dlightY.cnt)
+				loop
+				color 255, 255, 0
+				gsquare -1, lightX, lightY
+			loop
+		} else {
+			slopeT = double(CENTERY-(SIZEY/6 - 60)) / (double(CENTERX) - SIZEX)
+			slopeB = double(CENTERY-(SIZEY/6 + 60)) / (double(CENTERX) - SIZEX)
+			sliceT = double(CENTERY) - slopeT * CENTERX
+			sliceB = double(CENTERY) - slopeB * CENTERX
+			;curLRFlag = -1
+			repeat 3
+				curTX = double(CENTERX) + powf(lightSpeed, ((curFrame + cnt * LIGHT_SPAN / LIGHT_NUM)\LIGHT_SPAN))
+				curTY = slopeT * curTX + sliceT
+				hoge = powf(curTX - CENTERX, 2) + powf(curTY - CENTERY, 2)
+				curBX = ((slopeB * CENTERY + CENTERX - slopeB * sliceB) + sqrt(powf(slopeB * CENTERY + CENTERX - slopeB * sliceB, 2) - (powf(CENTERX, 2) + powf(CENTERY, 2) - 2 * sliceB * CENTERY + powf(sliceB, 2) - hoge) * (powf(slopeB, 2) + 1))) / (powf(slopeB, 2) + 1) 
+				curBY = slopeB * curBX + sliceB
+				dlightX(0) = double(CENTERX) + 1.5 * powf(lightSpeed, ((curFrame + cnt * LIGHT_SPAN / LIGHT_NUM)\LIGHT_SPAN))
+				dlightX(1) =  curTX
+				dlightX(2) =  curBX
+				dlightX(3) =  double(CENTERX) - 1.5 * (CENTERX - curBX)
+				dlightY(0) = dlightX(0) * slopeT + sliceT
+				dlightY(1) = dlightX(1) * slopeT + sliceT
+				dlightY(2) = dlightX(2) * slopeB + sliceB
+				dlightY(3) = dlightX(3) * slopeB + sliceB
+				repeat 4
+					lightX.cnt = int(dlightX.cnt)
+					lightY.cnt = int(dlightY.cnt)
+				loop
+				color 255, 255, 0
+				gsquare -1, lightX, lightY
+			loop
+		}
+		
+	loop
+	color 255, 255, 255
+	if(headLightCoolTime < 40){
+		circle SIZEX / 3, CENTERY, SIZEX / 3 + (CENTERX - SIZEX / 3) * 2 / 3, CENTERY + (CENTERX - SIZEX / 3) * 2 / 3, 1
+		circle SIZEX * 2 / 3, CENTERY, SIZEX * 2 / 3 + (CENTERX - SIZEX * 2 / 3) * 2 / 3, CENTERY + (CENTERX - SIZEX / 3) * 2 / 3, 1
+	} else {
+		circle SIZEX / 3 - 5, CENTERY - 5, SIZEX / 3 + (CENTERX - SIZEX / 3) * 2 / 3 + 5, CENTERY + (CENTERX - SIZEX / 3) * 2 / 3 + 5, 1
+		circle SIZEX * 2 / 3 + 5, CENTERY - 5, SIZEX * 2 / 3 + (CENTERX - SIZEX * 2 / 3) * 2 / 3 - 5, CENTERY + (CENTERX - SIZEX / 3) * 2 / 3 + 5, 1
+	}
+	if(headLightCoolTime == 80){
+		headLightCoolTime = 0
+	}
+	headLightCoolTime ++
+	gsel 0
+	gzoom ginfo_winx, ginfo_winy, 5, 0, 0, SIZEX, SIZEY
+	curFrame++
+	redraw 1
+	await 1000 / 30
+loop

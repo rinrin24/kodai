@@ -1,0 +1,116 @@
+@startuml carDrivingInTunnel_ClassDiagram
+title carDrivingInTunnel_ClassDiagram
+class OutputFile{
+  +outputString: std::string
+
+  +OutputFile(void): void
+}
+GenerateImage <.. OutputFile
+class GenerateImage{
+  +drawObjects: DrawObject*
+
+  +GenerateImage(int frame): void
+  +makeImage(void): std::string
+}
+class Background{
+  +rectangle: Quadrangle*
+  +Background(vector<vector<Point*>>): void
+}
+class TunnelWall{
+  +tunnelCrossSection: Circle*
+  +TunnelWall(vector<vector<Point*>>): void
+}
+class Light{
+  +lightBlur: vector<Quadrangle*>
+
+  +Light(vector<vector<Point*>>): void
+}
+class Road{
+  +trapezoid: Quadrangle*
+
+  +Road(vector<vector<Point*>>): void
+}
+class WhiteLine{
+  +trapezoid: Quadrangle*
+
+  +WhiteLine(vector<vector<Point*>>): void
+}
+class HeadLight{
+  +lightBlur: vector<Circle*>
+
+  +HeadLight(vector<vector<Point*>>): void
+}
+abstract class DrawObject{
+  +points: vector<vector<Point*>>
+  +draw(int frame): void
+}
+DrawObject <.. GenerateImage
+Point <.. DrawObject
+DrawObject <|-- Background
+DrawObject <|-- TunnelWall
+DrawObject <|-- Light
+DrawObject <|-- Road
+DrawObject <|-- WhiteLine
+DrawObject <|-- HeadLight
+Road *-- WhiteLine
+
+class Circle{
+  +coordinate: Coordinate*
+  +size: Size*
+  +color: Color*
+  +centerAngle: Angle*
+ 
+  +Circle(Coordinate*, Size*, Color*, Angle*): void
+  +fillCircle(void): void
+}
+class Quadrangle{
+  +coordinate: std::vector<Coordinate*>
+  +color: Color*
+ 
+  +Quadrangle(Coordinate*, Size*, Color*): void
+}
+abstract class Shape{
+  +coordinate: Coordinate*
+  +size: Size*
+  +color: Color*
+ 
+  +draw(int, vector<vector<Point*>>): vector<vector<Point*>>
+}
+
+Shape <|-- Circle
+Shape <|-- Quadrangle
+
+class Coordinate{
+  +x: int
+  +y: int
+ 
+  +Coordinate(int, int): void
+}
+class Size{
+  +x: int
+  +y: int
+ 
+  +Size(int, int): void
+}
+class Color{
+  +red: int
+  +blue: int
+  +green: int
+  +transparancy: int
+ 
+  +Color(int, int, int, int): void
+  +Color(int): void
+}
+class Point{
+}
+Coordinate <.. Shape
+Size <.. Shape
+Color <.. Shape
+Point <..Shape
+class Angle{
+  +angle: int
+ 
+  +Angle(int): void
+}
+Angle <..Circle
+@enduml
